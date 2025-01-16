@@ -3,11 +3,14 @@ from flask_cors import CORS
 from models import item, transaction, users, auction, bid
 import logging
 from sqlalchemy.exc import SQLAlchemyError
+from routes.auth_route import auth_route
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 CORS(app)
+
+app.register_blueprint(auth_route)
 
 if __name__ == '__main__':
     try:

@@ -10,8 +10,8 @@ class Transaction(db.Model):
     updated_at = db.Column(db.DateTime,nullable=False, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     deleted_at = db.Column(db.DateTime, nullable=True)
 
-    auction = db.relationship('Auction', back_populates='transactions')
-    winner = db.relationship('User', back_populates='transactions')
+    auction = db.relationship('Auction', backref='transactions', lazy=True)
+    winner = db.relationship('User', backref='transactions', lazy=True)
 
     def to_dict(self):
         return {

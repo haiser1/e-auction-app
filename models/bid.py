@@ -10,8 +10,8 @@ class Bid(db.Model):
     updated_at = db.Column(db.DateTime,nullable=False, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     deleted_at = db.Column(db.DateTime, nullable=True)
 
-    user = db.relationship('User', back_populates='bids')
-    auction = db.relationship('Auction', back_populates='bids')
+    user = db.relationship('User', backref='bids', lazy=True)
+    auction = db.relationship('Auction', backref='bids', lazy=True)
 
     def to_dict(self):
         return {
