@@ -1,5 +1,5 @@
 from bcrypt import checkpw, gensalt, hashpw
-from models.users import User
+from models.user import User
 from vallidation.user_validation import UpdateUserValidation
 from base_response.base_response import BaseResponse
 from flask import jsonify
@@ -43,6 +43,14 @@ def update_user_service(user_id, request_data):
     except ValidationError as e:
         return jsonify(BaseResponse.response_error(e.messages)), 400
 
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
+    
+def get_all_user_service():
+    try:
+        users = User.query.filter_by(deleted_at=None).all()
+        return jsonify(BaseResponse.response_success([user.to_dict() for user in users])), 200
     except Exception as ex:
         logging.error(ex)
         return jsonify(BaseResponse.response_error('Internal server error')), 500

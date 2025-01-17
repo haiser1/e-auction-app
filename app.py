@@ -1,6 +1,6 @@
 from config import app, db
 from flask_cors import CORS
-from models import item, transaction, users, auction, bid
+from models import item, transaction, user, auction, bid
 import logging
 from sqlalchemy.exc import SQLAlchemyError
 from routes.auth_route import auth_route

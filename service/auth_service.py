@@ -1,7 +1,7 @@
 import datetime
 import logging
 import jwt
-from models.users import User
+from models.user import User
 from vallidation.auth_validation import RegisterValidation, LoginValidation
 from base_response.base_response import BaseResponse
 from flask import jsonify
