@@ -1,5 +1,5 @@
 from flask import Blueprint
-from controllers.auth_controller import register_controller, login_controller
+from controllers.auth_controllers import register_controller, login_controller
 
 auth_route = Blueprint('auth_route', __name__)
 
