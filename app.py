@@ -5,6 +5,7 @@ import logging
 from sqlalchemy.exc import SQLAlchemyError
 from routes.auth_route import auth_route
 from routes.user_route import user_route
+from routes.item_route import item_route
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
@@ -13,6 +14,7 @@ CORS(app)
 
 app.register_blueprint(auth_route)
 app.register_blueprint(user_route)
+app.register_blueprint(item_route)
 
 if __name__ == '__main__':
     try:

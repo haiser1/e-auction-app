@@ -5,7 +5,7 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    starting_price = db.Column(db.Float(10, 2), nullable=False)
+    starting_price = db.Column(db.Float(precision=2), nullable=False)
     image_url = db.Column(db.String(255), nullable=True)
     status = db.Column(db.Enum('open', 'closed', name='item_status'), default='open', nullable=False)
     created_at = db.Column(db.DateTime,nullable=False, default=db.func.current_timestamp())
