@@ -19,7 +19,6 @@ app.register_blueprint(item_route)
 if __name__ == '__main__':
     try:
         print("Connecting to database...")
-        print(app.config['SQLALCHEMY_DATABASE_URI'])
         
         with db.engine.connect() as connection:
             print("Database connected successfully!")
