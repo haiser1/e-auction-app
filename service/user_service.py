@@ -49,7 +49,7 @@ def update_user_service(user_id, request_data):
     
 def get_all_user_service():
     try:
-        users = User.query.filter_by(deleted_at=None).all()
+        users = User.query.filter_by(role='user',deleted_at=None).all()
         return jsonify(BaseResponse.response_success([user.to_dict() for user in users])), 200
     except Exception as ex:
         logging.error(ex)

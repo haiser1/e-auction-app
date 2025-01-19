@@ -13,7 +13,7 @@ def update_user_controller(current_user):
     response_data = update_user_service(current_user['id'], request_data)
     return response_data
 
-@token_required
+@admin_required
 def get_all_user_controller(current_user):
     response_data = get_all_user_service()
     return response_data
