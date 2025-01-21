@@ -1,15 +1,11 @@
 from config import app, db
 from flask_cors import CORS
 from models import item, transaction, user, auction, bid
-import logging
 from sqlalchemy.exc import SQLAlchemyError
 from routes.auth_route import auth_route
 from routes.user_route import user_route
 from routes.item_route import item_route
 from flask_swagger_ui import get_swaggerui_blueprint
-
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 CORS(app)
 

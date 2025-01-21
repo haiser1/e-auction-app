@@ -8,5 +8,5 @@ def upload_to_cloudinary(image):
         return response['secure_url']
     except Exception as e:
         logging.error("Error uploading to Cloudinary", exc_info=True)
-        print(e)
+        print("Cloudinary error details:", e)
         return None
