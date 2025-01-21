@@ -1,10 +1,12 @@
 from middleware.jwt_auth import token_required, admin_required
 from service.item_service import (
-    create_item, get_item_by_id_service,
+    create_item, 
+    get_item_by_id_service,
     get_item_by_user_pagination_service,
     update_item_by_user_service, 
     delete_item_by_user_service,
-    get_item_by_admin_pagination_service
+    get_item_by_admin_pagination_service,
+    get_item_by_id_admin_service
     )
 from flask import request, jsonify
 
@@ -50,4 +52,9 @@ def get_item_by_admin_pagination_controller(current_user):
     page = request.args.get('page', 1, type=int)
     limit = request.args.get('limit', 10, type=int)
     response_data = get_item_by_admin_pagination_service(page, limit)
+    return response_data
+
+@admin_required
+def get_item_by_id_admin_controller(current_user, item_id):
+    response_data = get_item_by_id_admin_service(item_id)
     return response_data
