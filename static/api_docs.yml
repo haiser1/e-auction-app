@@ -1,0 +1,381 @@
+openapi: '3.0.3'
+info:
+  title: Kasir API Documentation
+  version: '1.0'
+servers:
+  - url: https://api-kasir.vercel.app
+  - url: http://localhost:5000
+
+tags:
+  - name: Auth
+  - name: Users
+  - name: Admin
+  - name: Items
+  - name: Bid
+  - name: Auction
+  - name: Transaction
+
+paths:
+  /api/users/register:
+    post:
+      tags:
+        - Auth
+      summary: Register User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: jhon
+                email:
+                  type: string
+                  example: jhon@gmail.com
+                password:
+                  type: string
+                  example: 1234
+      responses:
+        '201':
+          description: Register Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: jhon
+                      email:
+                        type: string
+                        example: jhon@gmail.com
+                      role:
+                        type: string
+                        example: user
+        '400':
+          description: Register Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      name:
+                        type: array
+                        example: [name cannot be empty]
+                      email:
+                        type: array
+                        example: [Not a valid email address.]
+  
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login User and Admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: jhon@gmail.com
+                password:
+                  type: string
+                  example: 1234
+      responses:
+        '200':
+          description: Login Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: token jwt
+        '400':
+          description: Login Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example: [Not a valid email address.]
+                      password:
+                        type: array
+                        example: [password cannot be empty]
+    
+  /api/users/me:
+    get:
+      tags:
+        - Users
+      summary: Get User Current
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get User Current Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: jhon
+                      email:
+                        type: string
+                        example: jhon@gmail.com
+                      role:
+                        type: string
+                        example: user
+        '401':
+          description: Get User Current Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+    patch:
+      tags:
+        - Users
+      summary: Update User Current
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: jhon
+                email:
+                  type: string
+                  example: jhon@gmail.com
+                old_password:
+                  type: string
+                  example: 1234
+                new_password:
+                  type: string
+                  example: 1234
+      responses:
+        '200':
+          description: Update User Current Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: jhon
+                      email:
+                        type: string
+                        example: jhon@gmail.com
+                      role:
+                        type: string
+                        example: user
+        '401':
+          description: Update User Current Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+  /api/admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Get All User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get All User Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: jhon
+                        email:
+                          type: string
+                          example: jhon@gmail.com
+                        role:
+                          type: string
+                          example: user
+        '403':
+          description: Get All User Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Forbidden
+
+  /api/admin/users/{id}:
+    patch:
+      tags:
+        - Admin
+      summary: Update User
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: jhon
+                email:
+                  type: string
+                  example: jhon@gmail.com
+                new_password:
+                  type: string
+                  example: 1234
+      responses:
+        '200':
+          description: Update User Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: jhon
+                      email:
+                        type: string
+                        example: jhon@gmail.com
+                      role:
+                        type: string
+                        example: user
+        '403':
+          description: Update User Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Forbidden
+
+    delete:
+      tags:
+        - Admin
+      summary: Delete User
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Delete User Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: User deleted successfully
+        '403':
+          description: Delete User Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Forbidden
