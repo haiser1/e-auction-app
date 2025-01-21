@@ -1,6 +1,7 @@
 from middleware.jwt_auth import token_required, admin_required
 from service.item_service import (
-    create_item, 
+    create_item,
+    delete_item_by_admin_service, 
     get_item_by_id_service,
     get_item_by_user_pagination_service,
     update_item_by_admin_service,
@@ -64,4 +65,9 @@ def get_item_by_id_admin_controller(current_user, item_id):
 def update_item_by_admin_controller(current_user, item_id):
     request_data = request.get_json()
     response_data = update_item_by_admin_service(item_id, request_data)
+    return response_data
+
+@admin_required
+def delete_item_by_admin_controller(current_user, item_id):
+    response_data = delete_item_by_admin_service(item_id)
     return response_data

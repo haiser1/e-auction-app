@@ -145,3 +145,15 @@ def update_item_by_admin_service(item_id, request_data):
     except Exception as ex:
         logging.error(ex)
         return jsonify(BaseResponse.response_error('Internal server error')), 500
+    
+def delete_item_by_admin_service(item_id):
+    try:
+        item = Item.query.filter_by(id=item_id, deleted_at=None).first()
+        if item is None:
+            return jsonify(BaseResponse.response_error('Item not found')), 404
+        item.deleted_at = datetime.datetime.now()
+        db.session.commit()
+        return jsonify(BaseResponse.response_success({'message': 'Data item deleted successfuly'}))
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
