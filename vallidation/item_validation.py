@@ -14,3 +14,9 @@ class UpdateItemByUserValidation(ma.Schema):
     name = fields.String(required=False)
     description = fields.String(required=False)
     starting_price = fields.Float(required=False, validate=validate.Range(min=0, error="starting price cannot be negative"))
+
+class UpdateItemByAdminValidation(ma.Schema):
+    name = fields.String(required=False)
+    description = fields.String(required=False)
+    starting_price = fields.Float(required=False, validate=validate.Range(min=0, error="starting price cannot be negative"))
+    status = fields.String(required=False, validate=validate.OneOf(['open', 'closed'], error="status must be 'open' or 'closed'"))
