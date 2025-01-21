@@ -1,6 +1,6 @@
 from bcrypt import checkpw, gensalt, hashpw
 from models.user import User
-from vallidation.user_validation import UpdateUserValidation
+from vallidation.user_validation import UpdateUserValidation, UpdateUserByAdminValidation
 from base_response.base_response import BaseResponse
 from flask import jsonify
 import logging
@@ -61,6 +61,26 @@ def get_user_by_id_service(user_id):
         if user is None:
             return jsonify(BaseResponse.response_error('User not found')), 404
         return jsonify(BaseResponse.response_success(user.to_dict())), 200
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
+
+def update_user_by_admin_service(user_id, request_data):
+    try:
+        data = UpdateUserByAdminValidation().load(request_data)
+        user = User.query.filter_by(id=user_id, role='user', deleted_at=None).first()
+        if user is None:
+            return jsonify(BaseResponse.response_error('User not found')), 404
+        if data.get('name'):
+            user.name = data['name']
+        if data.get('email'):
+            user.email = data['email']
+        if data.get('new_password'):
+            user.password = hashpw(data['new_password'].encode('utf-8'), gensalt()).decode('utf-8')
+        db.session.commit()
+        return jsonify(BaseResponse.response_success(user.to_dict())), 200
+    except ValidationError as e:
+        return jsonify(BaseResponse.response_error(e.messages)), 400 
     except Exception as ex:
         logging.error(ex)
         return jsonify(BaseResponse.response_error('Internal server error')), 500
