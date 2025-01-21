@@ -1,3 +1,4 @@
+import datetime
 import logging
 from models.item import Item
 from vallidation.item_validation import CreateItemValidation, GetItemPaginationValidation, UpdateItemByUserValidation
@@ -85,6 +86,18 @@ def update_item_by_user_service(item_id, request_data, user_id, image):
         return jsonify(BaseResponse.response_success(item.to_dict())), 200
     except ValidationError as e:
         return jsonify(BaseResponse.response_error(e.messages)), 400
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
+    
+def delete_item_by_user_service(item_id, user_id):
+    try:
+        item = Item.query.filter_by(id=item_id, user_id=user_id, deleted_at=None).first()
+        if item is None:
+            return jsonify(BaseResponse.response_error('Item not found')), 404
+        item.deleted_at = datetime.datetime.now()
+        db.session.commit()
+        return jsonify(BaseResponse.response_success({'message': 'Data item deleted successfuly'}))
     except Exception as ex:
         logging.error(ex)
         return jsonify(BaseResponse.response_error('Internal server error')), 500

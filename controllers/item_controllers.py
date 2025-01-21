@@ -1,5 +1,10 @@
 from middleware.jwt_auth import token_required, admin_required
-from service.item_service import create_item, get_item_by_id_service, get_item_by_user_pagination_service, update_item_by_user_service
+from service.item_service import (
+    create_item, get_item_by_id_service,
+    get_item_by_user_pagination_service,
+    update_item_by_user_service, 
+    delete_item_by_user_service
+    )
 from flask import request, jsonify
 
 @token_required
@@ -32,4 +37,9 @@ def update_item_by_user_controller(current_user, item_id):
         image = request.files['image']
 
     response_data = update_item_by_user_service(item_id, request.form, current_user['id'], image)
+    return response_data
+
+@token_required
+def delete_item_by_user_controller(current_user, item_id):
+    response_data = delete_item_by_user_service(item_id, current_user['id'])
     return response_data
