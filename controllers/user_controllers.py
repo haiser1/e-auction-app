@@ -1,6 +1,6 @@
 from flask import request
 from middleware.jwt_auth import token_required, admin_required
-from service.user_service import get_user_current_service, update_user_service, get_all_user_service
+from service.user_service import get_user_by_id_service, get_user_current_service, update_user_service, get_all_user_service
 
 @token_required
 def get_user_current_controller(current_user):
@@ -16,4 +16,9 @@ def update_user_controller(current_user):
 @admin_required
 def get_all_user_controller(current_user):
     response_data = get_all_user_service()
+    return response_data
+
+@admin_required
+def get_user_by_id_controller(current_user, user_id):
+    response_data = get_user_by_id_service(user_id)
     return response_data
