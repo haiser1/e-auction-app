@@ -3,7 +3,8 @@ from service.item_service import (
     create_item, get_item_by_id_service,
     get_item_by_user_pagination_service,
     update_item_by_user_service, 
-    delete_item_by_user_service
+    delete_item_by_user_service,
+    get_item_by_admin_pagination_service
     )
 from flask import request, jsonify
 
@@ -42,4 +43,11 @@ def update_item_by_user_controller(current_user, item_id):
 @token_required
 def delete_item_by_user_controller(current_user, item_id):
     response_data = delete_item_by_user_service(item_id, current_user['id'])
+    return response_data
+
+@admin_required
+def get_item_by_admin_pagination_controller(current_user):
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 10, type=int)
+    response_data = get_item_by_admin_pagination_service(page, limit)
     return response_data

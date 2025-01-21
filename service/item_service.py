@@ -101,3 +101,15 @@ def delete_item_by_user_service(item_id, user_id):
     except Exception as ex:
         logging.error(ex)
         return jsonify(BaseResponse.response_error('Internal server error')), 500
+
+def get_item_by_admin_pagination_service(page, limit):
+    try:
+        data = GetItemPaginationValidation().load({'page': page, 'limit': limit})
+        items = Item.query.filter_by(deleted_at=None).order_by(Item.created_at.desc()).paginate(page=data['page'], per_page=data['limit'], error_out=False)
+        return jsonify(BaseResponse.response_success({'items': [item.to_dict() for item in items.items], 'total': items.total, 'page': page, 'limit': limit})), 200
+    
+    except ValidationError as e:
+        return jsonify(BaseResponse.response_error(e.messages)), 400
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
