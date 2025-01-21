@@ -1,3 +1,4 @@
+import datetime
 from bcrypt import checkpw, gensalt, hashpw
 from models.user import User
 from vallidation.user_validation import UpdateUserValidation, UpdateUserByAdminValidation
@@ -81,6 +82,18 @@ def update_user_by_admin_service(user_id, request_data):
         return jsonify(BaseResponse.response_success(user.to_dict())), 200
     except ValidationError as e:
         return jsonify(BaseResponse.response_error(e.messages)), 400 
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
+
+def delete_user_by_admin_service(user_id):
+    try:
+        user = User.query.filter_by(id=user_id, role='user', deleted_at=None).first()
+        if user is None:
+            return jsonify(BaseResponse.response_error('User not found')), 404
+        user.deleted_at = datetime.datetime.now()
+        db.session.commit()
+        return jsonify(BaseResponse.response_success({'message': 'Data user deleted successfuly'}))
     except Exception as ex:
         logging.error(ex)
         return jsonify(BaseResponse.response_error('Internal server error')), 500
