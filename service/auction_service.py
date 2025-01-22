@@ -41,3 +41,13 @@ def get_auction_pagination_service(page, limit):
     except Exception as ex:
         logging.error(ex)
         return jsonify(BaseResponse.response_error('Internal server error')), 500
+
+def get_auction_by_id_service(auction_id):
+    try:
+        auction = Auction.query.filter_by(id=auction_id, deleted_at=None).first()
+        if auction is None:
+            return jsonify(BaseResponse.response_error('Auction not found')), 404
+        return jsonify(BaseResponse.response_success(auction.to_dict())), 200
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
