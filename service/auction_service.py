@@ -1,3 +1,4 @@
+import datetime
 import logging
 from marshmallow import ValidationError
 from vallidation.auction_validation import CreateAuctionValidation, GetAuctionPaginationValidation, UpdateAuctionValidation
@@ -66,6 +67,18 @@ def update_auction_service(auction_id, request_data):
         return jsonify(BaseResponse.response_success(auction.to_dict())), 200
     except ValidationError as e:
         return jsonify(BaseResponse.response_error(e.messages)), 400
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
+    
+def delete_auction_service(auction_id):
+    try:
+        auction = Auction.query.filter_by(id=auction_id, deleted_at=None).first()
+        if auction is None:
+            return jsonify(BaseResponse.response_error('Auction not found')), 404
+        auction.deleted_at = datetime.datetime.now()
+        db.session.commit()
+        return jsonify(BaseResponse.response_success({"message": "Data auction deleted successfuly"})), 200
     except Exception as ex:
         logging.error(ex)
         return jsonify(BaseResponse.response_error('Internal server error')), 500
