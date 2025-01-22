@@ -8,20 +8,20 @@ from routes.item_route import item_route
 from routes.auction_route import auction_route
 from routes.bid_route import bid_route
 from flask_swagger_ui import get_swaggerui_blueprint
+from bcrypt import hashpw, gensalt
 
-CORS(app)
-
-swager_url = '/api/docs'
+swagger_url = '/api/docs'
 api_url = '/static/api_docs.yml'
-swager_ui_blueprint = get_swaggerui_blueprint(
-    swager_url,
+swagger_ui_blueprint = get_swaggerui_blueprint(
+    swagger_url,
     api_url,
     config={
         'app_name': 'Auction API Documentation'
     }
 )
 
-app.register_blueprint(swager_ui_blueprint, url_prefix=swager_url)
+app.register_blueprint(swagger_ui_blueprint, url_prefix=swagger_url)
+password_hash = hashpw('password'.encode('utf-8'), gensalt())
 
 app.register_blueprint(auth_route)
 app.register_blueprint(user_route)

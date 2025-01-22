@@ -1,3 +1,4 @@
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 import os
@@ -8,6 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 db_user = os.getenv('DB_USER')
 db_host = os.getenv('DB_HOST')
