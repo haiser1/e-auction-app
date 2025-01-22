@@ -23,8 +23,15 @@ class Bid(db.Model):
             },
             'auction': {
                 'id': self.auction.id,
-                'item': self.auction.item.to_dict(),
+                'item': {
+                    'id': self.auction.item.id,
+                    'name': self.auction.item.name,
+                    'description': self.auction.item.description,
+                    'starting_price': self.auction.item.starting_price,
+                    'image_url': self.auction.item.image_url
+                }
             },
             'bid_amount': self.bid_amount,
+            'current_price': self.auction.current_price,
             'created_at': self.created_at,
         }
