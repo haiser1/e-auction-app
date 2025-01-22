@@ -7,7 +7,7 @@ class Item(db.Model):
     description = db.Column(db.Text, nullable=False)
     starting_price = db.Column(db.Float(precision=2), nullable=False)
     image_url = db.Column(db.String(255), nullable=True)
-    status = db.Column(db.Enum('open', 'closed', name='item_status'), default='open', nullable=False)
+    status = db.Column(db.Enum('sold', 'available', 'reserved', name='item_status'), default='available', nullable=False)
     created_at = db.Column(db.DateTime,nullable=False, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime,nullable=False, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     deleted_at = db.Column(db.DateTime, nullable=True)

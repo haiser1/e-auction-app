@@ -5,6 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from routes.auth_route import auth_route
 from routes.user_route import user_route
 from routes.item_route import item_route
+from routes.auction_route import auction_route
 from flask_swagger_ui import get_swaggerui_blueprint
 
 CORS(app)
@@ -24,6 +25,7 @@ app.register_blueprint(swager_ui_blueprint, url_prefix=swager_url)
 app.register_blueprint(auth_route)
 app.register_blueprint(user_route)
 app.register_blueprint(item_route)
+app.register_blueprint(auction_route)
 
 if __name__ == '__main__':
     try:
