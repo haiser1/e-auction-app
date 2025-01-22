@@ -23,3 +23,12 @@ class CreateAuctionValidation(ma.Schema):
 class GetAuctionPaginationValidation(ma.Schema):
     page = fields.Integer(required=False, default=1, validate=validate.Range(min=1, error="page cannot be negative or zero"))
     limit = fields.Integer(required=False, default=10, validate=validate.Range(min=1, error="limit cannot be negative or zero"))
+
+class UpdateAuctionValidation(ma.Schema):
+    close_biding = CustomDateField(required=False)
+    status = fields.String(required=False, validate=validate.OneOf(['open', 'closed'], error="status must be 'open' or 'closed'"))
+
+    @validates("close_biding")
+    def validate_future_date(self, value):
+        if value < datetime.now():
+            raise ValidationError("close biding must be a future date")

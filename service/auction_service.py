@@ -1,6 +1,6 @@
 import logging
 from marshmallow import ValidationError
-from vallidation.auction_validation import CreateAuctionValidation, GetAuctionPaginationValidation
+from vallidation.auction_validation import CreateAuctionValidation, GetAuctionPaginationValidation, UpdateAuctionValidation
 from models.auction import Auction
 from models.item import Item
 from base_response.base_response import BaseResponse
@@ -48,6 +48,24 @@ def get_auction_by_id_service(auction_id):
         if auction is None:
             return jsonify(BaseResponse.response_error('Auction not found')), 404
         return jsonify(BaseResponse.response_success(auction.to_dict())), 200
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
+    
+def update_auction_service(auction_id, request_data):
+    try:
+        data = UpdateAuctionValidation().load(request_data)
+        auction = Auction.query.filter_by(id=auction_id, deleted_at=None).first()
+        if auction is None:
+            return jsonify(BaseResponse.response_error('Auction not found')), 404
+        if data.get('close_biding'):
+            auction.close_biding = data['close_biding']
+        if data.get('status'):
+            auction.status = data['status']
+        db.session.commit()
+        return jsonify(BaseResponse.response_success(auction.to_dict())), 200
+    except ValidationError as e:
+        return jsonify(BaseResponse.response_error(e.messages)), 400
     except Exception as ex:
         logging.error(ex)
         return jsonify(BaseResponse.response_error('Internal server error')), 500
