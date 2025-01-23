@@ -13,7 +13,9 @@ def create_item(request_data, user_id):
         find = Item.query.filter_by(name=data['name'],user_id=user_id, deleted_at=None).first()
         if find is not None:
             return jsonify(BaseResponse.response_error('Item already exists')), 400
-        data_item = Item(name=data['name'],description=data['description'], starting_price=data['starting_price'], user_id=user_id, status='open')
+
+        data_item = Item(name=data['name'],description=data['description'], starting_price=data['starting_price'], user_id=user_id)
+
         db.session.add(data_item)
         db.session.commit()
         return jsonify(BaseResponse.response_success(data_item.to_dict())), 201
