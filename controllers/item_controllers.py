@@ -14,12 +14,8 @@ from flask import request, jsonify
 
 @token_required
 def create_item_controller(current_user):
-    if 'image' not in request.files:
-        return jsonify({"error": "No image part in the request"}), 400
-
-    image = request.files['image']
-
-    response_data = create_item(request.form, image, current_user['id'])
+    request_data = request.get_json()
+    response_data = create_item(request_data, current_user['id'])
     return response_data
 
 @token_required
@@ -36,12 +32,8 @@ def get_item_by_id_controller(current_user, item_id):
 
 @token_required
 def update_item_by_user_controller(current_user, item_id):
-    if 'image' not in request.files:
-        image = None
-    else:
-        image = request.files['image']
-
-    response_data = update_item_by_user_service(item_id, request.form, current_user['id'], image)
+    request_data = request.get_json()
+    response_data = update_item_by_user_service(item_id, request_data, current_user['id'])
     return response_data
 
 @token_required
