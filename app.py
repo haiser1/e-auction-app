@@ -45,4 +45,4 @@ if __name__ == '__main__':
     except Exception as ex:
         print(f"Unexpected error: {ex}")
 
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

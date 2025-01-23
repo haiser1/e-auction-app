@@ -1,10 +1,9 @@
 openapi: '3.0.3'
 info:
-  title: Kasir API Documentation
+  title: Auction API Documentation
   version: '1.0'
 servers:
-  - url: https://api-kasir.vercel.app
-  - url: http://localhost:5000
+  - url: http://localhost:5001
 
 tags:
   - name: Auth
