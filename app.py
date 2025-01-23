@@ -1,12 +1,13 @@
 from config import app, db
 from flask_cors import CORS
-from models import item, transaction, user, auction, bid
+from models import item, user, auction, bid, winner
 from sqlalchemy.exc import SQLAlchemyError
 from routes.auth_route import auth_route
 from routes.user_route import user_route
 from routes.item_route import item_route
 from routes.auction_route import auction_route
 from routes.bid_route import bid_route
+from routes.winner_route import winner_route
 from flask_swagger_ui import get_swaggerui_blueprint
 from bcrypt import hashpw, gensalt
 
@@ -28,6 +29,7 @@ app.register_blueprint(user_route)
 app.register_blueprint(item_route)
 app.register_blueprint(auction_route)
 app.register_blueprint(bid_route)
+app.register_blueprint(winner_route)
 
 if __name__ == '__main__':
     try:
