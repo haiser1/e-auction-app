@@ -1,7 +1,7 @@
 from config import db
 
-class Transaction(db.Model):
-    __tablename__ = 'transactions'
+class Winner(db.Model):
+    __tablename__ = 'winners'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     auction_id = db.Column(db.Integer, db.ForeignKey('auctions.id'), nullable=False)
     winner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -10,8 +10,8 @@ class Transaction(db.Model):
     updated_at = db.Column(db.DateTime,nullable=False, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     deleted_at = db.Column(db.DateTime, nullable=True)
 
-    auction = db.relationship('Auction', backref='transactions', lazy=True)
-    winner = db.relationship('User', backref='transactions', lazy=True)
+    auction = db.relationship('Auction', backref='winners', lazy=True)
+    winner = db.relationship('User', backref='winners', lazy=True)
 
     def to_dict(self):
         return {
