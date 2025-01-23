@@ -3,6 +3,7 @@ info:
   title: Auction API Documentation
   version: '1.0'
 servers:
+  - url: e-auction-app.vercel.app
   - url: http://localhost:5001
 
 tags:
@@ -10,9 +11,9 @@ tags:
   - name: Users
   - name: Admin
   - name: Items
-  - name: Bid
-  - name: Auction
-  - name: Transaction
+  - name: Auctions
+  - name: Bids
+  - name: Winners
 
 paths:
   /api/users/register:
@@ -274,7 +275,55 @@ paths:
                         type: string
                         example: Forbidden
 
-  /api/admin/users/{id}:
+  /api/admin/users/{user_id}:
+    get:
+      tags:
+        - Admin
+      summary: Get User
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get User Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: jhon
+                      email:
+                        type: string
+                        example: jhon@gmail.com
+                      role:
+                        type: string
+                        example: user
+        '403':
+          description: Get User Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Forbidden
     patch:
       tags:
         - Admin
@@ -378,6 +427,779 @@ paths:
                       message:
                         type: string
                         example: Forbidden
+  
+  /api/users/items:
+    post:
+      tags:
+        - Items
+      summary: Create Item by User
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: bajay
+                description:
+                  type: string
+                  example: bajay
+                strating_price:
+                  type: number
+                  example: 10000
+      responses:
+        '200':
+          description: Create Item Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '401':
+          description: Create Item Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+  
+    get:
+      tags:
+        - Items
+      summary: Get All Item by user with pagination
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Get All Item Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item_pagination'
+        '401':
+          description: Get All Item Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+  /api/users/items/{item_id}:
+    get:
+      tags:
+        - Items
+      summary: Get Item by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get Item Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '401':
+          description: Get Item Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+    patch:
+      tags:
+        - Items
+      summary: Update Item by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: bajay
+                description:
+                  type: string
+                  example: bajay
+                strating_price:
+                  type: number
+                  example: 10000
+      responses:
+        '200':
+          description: Update Item Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '401':
+          description: Update Item Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+    delete:
+      tags:
+        - Items
+      summary: Delete Item by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Delete Item Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Item deleted successfully
+        '401':
+          description: Delete Item Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+  /api/admin/items:
+    get:
+      tags:
+        - Items
+      summary: Get All Item by admin with pagination
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Get All Item Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item_pagination'
+        '401':
+          description: Get All Item Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+  /api/admin/items/{item_id}:
+    get:
+      tags:
+        - Items
+      summary: Get Item by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get Item Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '401':
+          description: Get Item Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+  
+    patch:
+      tags:
+        - Items
+      summary: Update Item by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: bajay
+                description:
+                  type: string
+                  example: bajay
+                strating_price:
+                  type: number
+                  example: 10000
+      responses:
+        '200':
+          description: Update Item Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '401':
+          description: Update Item Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+    delete:
+      tags:
+        - Items
+      summary: Delete Item by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Delete Item Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Item deleted successfully
+        '401':
+          description: Delete Item Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string  
+                        example: Unauthorized
+
+  /api/auctions/:
+    post:
+      tags:
+        - Auctions
+      summary: Create Auction
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item_id:
+                  type: integer
+                  example: 1
+                close_biding:
+                  type: string
+                  format: ddd-mm-yyyy
+                  example: 2023-01-01
+      responses:
+        '200':
+          description: Create Auction Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auction'
+        '401':
+          description: Create Auction Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+    get:
+      tags:
+        - Auctions
+      summary: Get All Auction with pagination                 
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Get All Auction Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auction_pagination'
+        '401':
+          description: Get All Auction Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+                      
+
+  /api/auctions/{auction_id}:
+    get:
+      tags:
+        - Auctions
+      summary: Get Auction by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: auction_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get Auction Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auction'
+        '401':
+          description: Get Auction Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+    patch:
+      tags:
+        - Auctions
+      summary: Update Auction by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: auction_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                close_biding:
+                  type: string
+                  format: ddd-mm-yyyy
+                  example: 2023-01-01
+                status:
+                  type: string
+                  example: open
+      responses:
+        '200':
+          description: Update Auction Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auction'
+        '401':
+          description: Update Auction Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+    delete:
+      tags:
+        - Auctions
+      summary: Delete Auction by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: auction_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Delete Auction Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Auction deleted successfully
+        '401':
+          description: Delete Auction Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+  /api/auctions/{auction_id}/bids:
+    post:
+      tags:
+        - Bids
+      summary: Create Bid
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: auction_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  example: 10000
+      responses:
+        '200':
+          description: Create Bid Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bid'
+        '401':
+          description: Create Bid Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+    get:
+      tags:
+        - Bids
+      summary: Get All History Bids by Auction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: auction_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get All Bids Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bid'
+        '401':
+          description: Get All Bids Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+  /api/users/me/bids:
+    get:
+      tags:
+        - Bids
+      summary: Get All History Bids by User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get All Bids Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bid'
+        '401':
+          description: Get All Bids Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+  
+  /api/auctions/{auction_id}/winners:
+    post:
+      tags:
+        - Winners
+      summary: Create Winner
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: auction_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Create Winner Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Winners'
+        '401':
+          description: Create Winner Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+  /api/admin/winners:
+    get:
+      tags:
+        - Winners
+      summary: Get All Winners
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get All Winners Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Winners'
+        '401':
+          description: Get All Winners Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized
+
+  /api/users/me/winners:
+    get:
+      tags:
+        - Winners
+      summary: Get All Winners by User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get All Winners Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Winners'
+        '401':
+          description: Get All Winners Invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Unauthorized                  
+
+
+
 
 components:
   securitySchemes:
@@ -385,3 +1207,244 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
+  schemas:
+    Item:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: bajay
+            description:
+              type: string
+              example: bajay
+            strating_price:
+              type: number
+              example: 10000
+            created_at:
+              type: string
+              format: date-time
+              example: 2023-01-01T00:00:00.000Z
+            updated_at:
+              type: string
+              format: date-time
+              example: 2023-01-01T00:00:00.000Z
+            user:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: jhon
+                email:
+                  type: string
+                  example: jhon@gmail.com
+    Item_pagination:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: bajay
+              description:
+                type: string
+                example: bajay
+              strating_price:
+                type: number
+                example: 10000
+              created_at:
+                type: string
+                format: date-time
+                example: 2023-01-01T00:00:00.000Z
+              updated_at:
+                type: string
+                format: date-time
+                example: 2023-01-01T00:00:00.000Z
+              user:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: jhon
+                  email:
+                    type: string
+                    example: jhon@gmail.com
+        limit:
+          type: integer
+          example: 1
+        page:
+          type: integer
+          example: 10
+        total:
+          type: integer
+          example: 1
+    Auction:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            status:
+              type: string
+              example: open
+            current_price:
+              type: number
+              example: 10000
+            close_biding:
+              type: string
+              format: date-time
+              example: 2023-01-01T00:00:00.000Z
+            created_at:
+              type: string
+              format: date-time
+              example: 2023-01-01T00:00:00.000Z
+            item:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: bajay
+                description:
+                  type: string
+                  example: bajay
+                strating_price:
+                  type: number
+                  example: 10000
+            user:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: jhon
+                email:
+                  type: string
+                  example: jhon@gmail.com
+    Auction_pagination:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Auction'
+        limit:
+          type: integer
+          example: 1
+        page:
+          type: integer
+          example: 10
+        total:
+          type: integer
+          example: 1
+    Bid:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            bid_amount:
+              type: number
+              example: 10000
+            current_price:
+              type: number
+              example: 10000
+            created_at:
+              type: string
+              format: date-time
+              example: 2023-01-01T00:00:00.000Z
+            user:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: jhon
+                email:
+                  type: string
+                  example: jhon@gmail.com
+            auction:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                item:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
+                      type: string
+                      example: bajay
+                    description:
+                      type: string
+                      example: bajay
+                    strating_price:
+                      type: number
+                      example: 10000
+    Winners:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            final_price:
+              type: number
+              example: 10000
+            created_at:
+              type: string
+              format: date-time
+              example: 2023-01-01T00:00:00.000Z
+            auction:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                item:
+                  $ref: '#/components/schemas/Item'
+                winner:
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
+                      type: string
+                      example: jhon
+
+
