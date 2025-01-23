@@ -116,8 +116,6 @@ def update_item_by_admin_service(item_id, request_data):
             item.description = data['description']
         if data.get('starting_price'):
             item.starting_price = data['starting_price']
-        if data.get('status'):
-            item.status = data['status']
         db.session.commit()
         return jsonify(BaseResponse.response_success(item.to_dict())), 200
     except ValidationError as e:
