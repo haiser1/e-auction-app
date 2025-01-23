@@ -41,3 +41,12 @@ def create_winner_service(auction_id):
     except Exception as ex:
         logging.error(ex, exc_info=True)
         return jsonify(BaseResponse.response_error('Internal server error')), 500
+    
+
+def get_all_winner_service():
+    try:
+        winners = Winner.query.filter_by(deleted_at=None).all()
+        return jsonify(BaseResponse.response_success([winner.to_dict() for winner in winners])), 200
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
