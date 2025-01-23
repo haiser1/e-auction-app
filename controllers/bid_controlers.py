@@ -1,4 +1,4 @@
-from service.bid_service import create_bid_service, get_history_bid_service
+from service.bid_service import create_bid_service, get_history_bid_by_user_service, get_history_bid_service
 from flask import request
 from middleware.jwt_auth import token_required
 
@@ -11,4 +11,9 @@ def create_bid_controller(current_user, auction_id):
 @token_required
 def get_history_bid_controller(current_user, auction_id):
     response_data = get_history_bid_service(auction_id)
+    return response_data
+
+@token_required
+def get_history_bid_by_user_controller(current_user):
+    response_data = get_history_bid_by_user_service(current_user['id'])
     return response_data

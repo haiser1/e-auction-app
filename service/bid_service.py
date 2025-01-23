@@ -52,3 +52,11 @@ def get_history_bid_service(auction_id):
     except Exception as ex:
         logging.error(ex)
         return jsonify(BaseResponse.response_error('Internal server error')), 500
+
+def get_history_bid_by_user_service(user_id):
+    try:
+        bids = Bid.query.filter_by(user_id=user_id, deleted_at=None).order_by(Bid.created_at.desc()).all()
+        return jsonify(BaseResponse.response_success([bid.to_dict() for bid in bids])), 200
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
