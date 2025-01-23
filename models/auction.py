@@ -26,7 +26,6 @@ class Auction(db.Model):
                 'name': self.item.name,
                 'description': self.item.description,
                 'starting_price': self.item.starting_price,
-                'image_url': self.item.image_url,
             },
             'status': self.status,
             'close_biding': self.close_biding,
