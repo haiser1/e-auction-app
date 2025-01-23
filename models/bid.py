@@ -27,8 +27,7 @@ class Bid(db.Model):
                     'id': self.auction.item.id,
                     'name': self.auction.item.name,
                     'description': self.auction.item.description,
-                    'starting_price': self.auction.item.starting_price,
-                    'image_url': self.auction.item.image_url
+                    'starting_price': self.auction.item.starting_price
                 }
             },
             'bid_amount': self.bid_amount,
