@@ -45,7 +45,15 @@ def create_winner_service(auction_id):
 
 def get_all_winner_service():
     try:
-        winners = Winner.query.filter_by(deleted_at=None).all()
+        winners = Winner.query.filter_by(deleted_at=None).order_by(Winner.created_at.desc()).all()
+        return jsonify(BaseResponse.response_success([winner.to_dict() for winner in winners])), 200
+    except Exception as ex:
+        logging.error(ex)
+        return jsonify(BaseResponse.response_error('Internal server error')), 500
+    
+def get_winner_by_user_service(user_id):
+    try:
+        winners = Winner.query.filter_by(winner_id=user_id, deleted_at=None).order_by(Winner.created_at.desc()).all()
         return jsonify(BaseResponse.response_success([winner.to_dict() for winner in winners])), 200
     except Exception as ex:
         logging.error(ex)
